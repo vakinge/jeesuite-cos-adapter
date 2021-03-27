@@ -26,7 +26,7 @@ public class CUploadObject {
 	private File file;
 	private long fileSize;
 	private InputStream inputStream;
-	private Map<String, Object> metadata = new HashMap<String, Object>();
+	private Map<String, Object> metadata = new HashMap<String, Object>(1);
 
 	public CUploadObject(String filePath) {
 		this.file = new File(filePath);

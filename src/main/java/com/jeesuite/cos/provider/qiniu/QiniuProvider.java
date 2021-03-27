@@ -24,6 +24,7 @@ import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
 import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
+import com.qiniu.storage.model.BucketInfo;
 import com.qiniu.storage.model.FileInfo;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
@@ -43,7 +44,6 @@ public class QiniuProvider extends AbstractProvider {
 	private static OkHttpClient httpClient = new OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS)
 			.build();
 	
-	private static final String DEFAULT_REGION_NAME = "z2";
 	public static final String NAME = "qiniu";
 	private static final String DEFAULT_CALLBACK_BODY = "filename=${fname}&size=${fsize}&mimeType=${mimeType}&height=${imageInfo.height}&width=${imageInfo.width}";
 	
@@ -71,15 +71,31 @@ public class QiniuProvider extends AbstractProvider {
 		auth = Auth.create(conf.getAccessKey(), conf.getSecretKey());
 
 		Region region;
-		if(DEFAULT_REGION_NAME.equals(conf.getRegionName())){
+		
+		if("huanan".equals(conf.getRegionName())){
 			region = Region.huanan();
-		}else{
-			region = Region.huanan();
-			conf.setRegionName(DEFAULT_REGION_NAME);
+		}else if("huabei".equals(conf.getRegionName())){
+			region = Region.huabei();
+		}else if("huadong".equals(conf.getRegionName())){
+			region = Region.huadong();
+		}else if("beimei".equals(conf.getRegionName())){
+			region = Region.beimei();
+		}else {
+			region = Region.autoRegion();
 		}
 		Configuration c = new Configuration(region);
 		uploadManager = new UploadManager(c);
 		bucketManager = new BucketManager(auth,c);
+	}
+	
+	@Override
+	public boolean existsBucket(String bucketName) {
+		try {			
+			BucketInfo bucketInfo = bucketManager.getBucketInfo(bucketName);
+			return bucketInfo != null;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	@Override

@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 import com.jeesuite.common.http.HttpUtils;
-import com.jeesuite.cos.COSProvider;
+import com.jeesuite.cos.CosProvider;
 import com.jeesuite.cos.CosProviderConfig;
 
 /**
@@ -15,7 +15,7 @@ import com.jeesuite.cos.CosProviderConfig;
  * @author <a href="mailto:vakinge@gmail.com">vakin</a>
  * @date 2017年1月7日
  */
-public abstract class AbstractProvider implements COSProvider{
+public abstract class AbstractProvider implements CosProvider{
 
 	protected static final String URL_PREFIX_PATTERN = "(http).*\\.(com|cn)\\/";
 	protected static final String HTTP_PREFIX = "http://";
@@ -30,6 +30,7 @@ public abstract class AbstractProvider implements COSProvider{
 	public AbstractProvider(CosProviderConfig conf) {
 		Validate.notBlank(conf.getAccessKey(), "[accessKey] not defined");
 		Validate.notBlank(conf.getSecretKey(), "[secretKey] not defined");
+		Validate.notBlank(conf.getRegionName(), "[regionName] not defined");
 		this.conf = conf;
 		if(StringUtils.isNotBlank(conf.getUrlPrefix()) && !conf.getUrlPrefix().endsWith("/")) {
 			this.conf.setUrlPrefix(conf.getUrlPrefix() + "/");

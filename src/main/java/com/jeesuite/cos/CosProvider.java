@@ -9,9 +9,11 @@ import java.util.Map;
  * @author <a href="mailto:vakinge@gmail.com">vakin</a>
  * @date 2017年1月5日
  */
-public interface COSProvider {
+public interface CosProvider {
 
 	String name();
+	
+	boolean existsBucket(String bucketName);
 	
 	void createBucket(String bucketName);
 	

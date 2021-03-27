@@ -81,6 +81,11 @@ public class QcloudProvider extends AbstractProvider {
 	public String name() {
 		return NAME;
 	}
+	
+	@Override
+	public boolean existsBucket(String bucketName) {
+		return cosclient.doesBucketExist(bucketName);
+	}
 
 	@Override
 	public void createBucket(String bucketName) {

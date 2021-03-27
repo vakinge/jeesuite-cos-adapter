@@ -39,7 +39,7 @@ import com.jeesuite.cos.provider.AbstractProvider;
  * @author <a href="mailto:vakinge@gmail.com">vakin</a>
  * @date 2017年8月23日
  */
-public class AliyunossProvider extends AbstractProvider{
+public class AliyunProvider extends AbstractProvider{
 
 	public static final String NAME = "aliyun";
 	
@@ -48,7 +48,7 @@ public class AliyunossProvider extends AbstractProvider{
 	private OSS ossClient;
 
 	
-	public AliyunossProvider(CosProviderConfig conf) {
+	public AliyunProvider(CosProviderConfig conf) {
 		super(conf);
 		String endpoint = String.format("https://oss-%s.aliyuncs.com", conf.getRegionName());
 		ClientBuilderConfiguration buildConf = new ClientBuilderConfiguration();
@@ -63,6 +63,10 @@ public class AliyunossProvider extends AbstractProvider{
 		return NAME;
 	}
 
+	@Override
+	public boolean existsBucket(String bucketName) {
+		return ossClient.doesBucketExist(bucketName);
+	}
 
 	@Override
 	public void createBucket(String bucketName) {
