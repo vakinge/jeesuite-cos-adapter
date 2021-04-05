@@ -39,3 +39,5 @@ public void test() {
 ## 文档
 具体使用请查看[使用文档](http://docs.jeesuite.com/docments/jeesuite-cos-adapter.html)
 
+## 交流微信群
+![微信交流群](https://jeesuite.oss-cn-guangzhou.aliyuncs.com/weixin_group_qrcode.jpg)
