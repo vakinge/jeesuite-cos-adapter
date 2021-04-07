@@ -36,6 +36,7 @@ import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.region.Region;
 import com.qcloud.cos.transfer.TransferManager;
 import com.qcloud.cos.transfer.Upload;
+import com.tencent.cloud.CosStsClient;
 
 /**
  * 
@@ -209,21 +210,13 @@ public class QcloudProvider extends AbstractProvider {
 	//https://github.com/tencentyun/qcloud-cos-sts-sdk/tree/master/java
 	@Override
 	public Map<String, Object> createUploadToken(UploadTokenParam param) {
-		Map<String, Object> config = new TreeMap<String, Object>();
-
-		// 替换为您的 SecretId
-		config.put("SecretId", "AKIDHTVVaVR6e3");
-		// 替换为您的 SecretKey
-		config.put("SecretKey", "PdkhT9e2rZCfy6");
-
-		// 临时密钥有效时长，单位是秒，默认1800秒，最长可设定有效期为7200秒
-		config.put("durationSeconds", 1800);
-
-		// 换成您的 bucket
-		config.put("bucket", "examplebucket-1250000000");
-		// 换成 bucket 所在地区
-		config.put("region", "ap-guangzhou");
-		config.put("allowPrefix", "a.jpg");
+		TreeMap<String, Object> config = new TreeMap<String, Object>();
+		config.put("SecretId", conf.getAccessKey());
+		config.put("SecretKey", conf.getSecretKey());
+		config.put("durationSeconds", param.getExpires());
+		config.put("bucket", currentBucketName(param.getBucketName()));
+		config.put("region", conf.getRegionName());
+		//config.put("allowPrefix", "a.jpg");
 
 		// 密钥的权限列表。简单上传、表单上传和分片上传需要以下的权限，其他权限列表请看
 		// https://cloud.tencent.com/document/product/436/31923
@@ -237,9 +230,12 @@ public class QcloudProvider extends AbstractProvider {
 				"name/cos:UploadPart", "name/cos:CompleteMultipartUpload" };
 		config.put("allowActions", allowActions);
 
-		//JSONObject credential = CosStsClient.getCredential(config);
-		// 成功返回临时密钥信息，如下打印密钥信息
-		return null;
+		try {
+			org.json.JSONObject json = CosStsClient.getCredential(config);
+			return json.toMap();
+		} catch (IOException e) {
+			throw new JeesuiteBaseException("生成临时凭证错误:"+e.getMessage());
+		}
 	}
 
 
